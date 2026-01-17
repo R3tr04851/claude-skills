@@ -1,28 +1,40 @@
 # AI Debate Hub
 
-A Claude Code skill that orchestrates multi-round debates between AI advisors (Gemini CLI and OpenAI Codex CLI), synthesizes their responses, and presents recommendations to the user.
+A Claude Code skill that enables **three-way debates** between Claude, Gemini CLI, and OpenAI Codex CLI. Claude is both a **participant and moderator**, contributing its own analysis alongside the other advisors.
 
 ## Overview
 
-AI Debate Hub enables Claude to act as a moderator, consulting multiple AI systems on complex questions. Each advisor analyzes the problem independently, then responds to each other's points across multiple rounds, leading to more thorough and balanced recommendations.
+AI Debate Hub creates a three-way discussion where all three AI systems analyze problems independently, respond to each other's points across multiple rounds, and converge on recommendations through genuine debate.
+
+**Key distinction:** Claude is NOT just an orchestrator - it's an active participant with its own voice.
 
 ```
-User Question
-     |
-     v
-+--------------------+
-|  Claude (Moderator)|
-+--------------------+
-     |         |
-     v         v
-+--------+ +--------+
-| Gemini | | Codex  |
-+--------+ +--------+
-     |         |
-     +----+----+
-          |
-          v
-   Synthesized Answer
+        User Question
+              |
+              v
++---------------------------+
+|         ROUND 1           |
++---------------------------+
+|  Gemini   Codex   Claude  |
+|  analyzes analyzes analyzes|
++---------------------------+
+              |
+              v
++---------------------------+
+|         ROUND 2+          |
++---------------------------+
+|  Gemini   Codex   Claude  |
+|  responds responds responds|
+|  to both  to both  to both |
++---------------------------+
+              |
+              v
++---------------------------+
+|       SYNTHESIS           |
++---------------------------+
+|   All 3 perspectives      |
+|   Claude's recommendation |
++---------------------------+
 ```
 
 ## Features
@@ -95,17 +107,21 @@ codex exec resume <UUID> --full-auto "Follow-up..."
 ### Debate Flow
 
 ```
-Round 1 (parallel):
+Round 1 (all three analyze):
 |-- Gemini analyzes topic
-+-- Codex analyzes topic
+|-- Codex analyzes topic
++-- Claude analyzes topic (YOUR contribution)
 
-Round 2+ (sequential):
-|-- Gemini responds to Codex's points
-+-- Codex responds to Gemini's points
+Round 2+ (all three respond):
+|-- Gemini responds to Codex + Claude
+|-- Codex responds to Gemini + Claude
++-- Claude responds to Gemini + Codex (YOUR contribution)
 
 Synthesis:
-+-- Claude summarizes agreements/disagreements
-+-- Provides final recommendation
++-- All three perspectives consolidated
++-- Points of agreement across all three
++-- Points of disagreement
++-- Claude's final recommendation
 ```
 
 ### File Structure
@@ -116,11 +132,14 @@ debates/
 +-- NNN-topic-slug/
     |-- context.md          # Initial context
     |-- state.json          # Session UUIDs, status
-    |-- synthesis.md        # Final synthesis
+    |-- synthesis.md        # Final synthesis (all 3 perspectives)
     +-- rounds/
         |-- r001_gemini.md
         |-- r001_codex.md
+        |-- r001_claude.md  # Claude's contribution
         |-- r002_gemini.md
+        |-- r002_codex.md
+        |-- r002_claude.md  # Claude's contribution
         +-- ...
 ```
 
@@ -155,7 +174,13 @@ Verify session continuity by checking token growth in Codex output.
 
 ### Version History
 
-- **v4.6** (current) - Production-ready
+- **v4.7** (current) - Three-way debate structure
+  - Claude is now an active PARTICIPANT, not just orchestrator
+  - Each round has contributions from all three: Gemini, Codex, Claude
+  - Advisors receive responses from BOTH other participants
+  - Claude's responses saved to r00N_claude.md files
+
+- **v4.6** - Production-ready architecture
   - Gemini runs from project root for file access
   - Both advisors use explicit UUID tracking
   - Full e2e tested and validated
