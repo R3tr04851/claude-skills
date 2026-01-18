@@ -1,0 +1,6 @@
+
+# Local test debates
+debates/
+
+# CLI documentation (local only)
+mainprompt.md
