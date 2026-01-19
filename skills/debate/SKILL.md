@@ -1,4 +1,4 @@
-# AI Debate Hub Skill v4.8
+# AI Debate Hub Skill v4.9
 
 You are Claude, a **participant and moderator** in a three-way AI debate system. You consult AI advisors (Gemini, Codex) via CLI, contribute your own analysis, and synthesize all perspectives for the user.
 
@@ -234,14 +234,14 @@ cd "$DEBATE" && codex exec resume 019bcd8b-ff49-72a3-a8b1-58e2c613fb0d --full-au
 
 ```
 ROUND 1 (advisors parallel, then Claude):
-|-- cd $PROJECT_ROOT && gemini -y "Task: {task}. Read @path/to/file..."
+|-- cd $PROJECT_ROOT && gemini -y -o text "Task: {task}. Read @path/to/file..."
 |   -> Creates session, get UUID from --list-sessions after
 +-- cd $DEBATE && codex exec --full-auto "Task: {task}..."
     -> Creates session, capture UUID from output header
 +-- Claude: Read both responses, write YOUR analysis to r001_claude.md
 
 ROUND 2 (sequential, all three respond):
-|-- cd $PROJECT_ROOT && gemini -r <UUID> -y "Codex said: {r1}. Claude said: {r1}. Respond..."
+|-- cd $PROJECT_ROOT && gemini -r <UUID> -y -o text "Codex said: {r1}. Claude said: {r1}. Respond..."
 +-- cd $DEBATE && codex exec resume <UUID> --full-auto "Gemini said: {r1}. Claude said: {r1}..."
 +-- Claude: Read both R2 responses, write YOUR response to r002_claude.md
 
@@ -274,7 +274,7 @@ ROUND 3+ (continue pattern):
 PROJECT_ROOT="G:/.../ai-debate-hub"
 
 # Round 1: Create session (from project root to access all files)
-cd "$PROJECT_ROOT" && gemini -y "Your initial prompt - can use relative paths like skills/debate.md"
+cd "$PROJECT_ROOT" && gemini -y -o text "Your initial prompt - can use relative paths like skills/debate.md"
 # -> Get session UUID from --list-sessions after
 
 # Get session UUID
@@ -282,7 +282,7 @@ cd "$PROJECT_ROOT" && gemini --list-sessions
 # -> Find latest session, note UUID like: dcf99acf-a594-4b91-b426-a78cc998f47a
 
 # Round 2+: Resume by explicit UUID
-cd "$PROJECT_ROOT" && gemini -r <UUID> -y "Follow-up prompt..."
+cd "$PROJECT_ROOT" && gemini -r <UUID> -y -o text "Follow-up prompt..."
 ```
 
 **Key flags:**
@@ -290,7 +290,11 @@ cd "$PROJECT_ROOT" && gemini -r <UUID> -y "Follow-up prompt..."
 - `-r latest` - resume most recent session (risky if multiple debates)
 - `-r 1` - resume by index
 - `-y` or `--yolo` - auto-approve all actions (REQUIRED for non-interactive)
+- `-o text` - output as plain text (REQUIRED for captured/piped output)
+- `-o json` - output as JSON (use `jq -r '.response'` to extract)
 - Fast: ~10-30 seconds
+
+**IMPORTANT:** Always use `-o text` when capturing output. Without it, Gemini uses interactive mode which produces empty or corrupted output when piped.
 
 **Important:** Run from project root so Gemini can read all project files. Track sessions by UUID in state.json to distinguish between debates.
 
@@ -369,7 +373,7 @@ PROJECT="G:/.../ai-debate-hub"
 DEBATE="G:/.../debates/007-topic"
 
 # 1. Gemini (parallel) - run from project root to access files
-cd "$PROJECT" && gemini -y "You are an expert advisor in a three-way debate with Codex and Claude.
+cd "$PROJECT" && gemini -y -o text "You are an expert advisor in a three-way debate with Codex and Claude.
 Topic: {topic}
 Task: {task}
 
@@ -402,7 +406,7 @@ Provide initial analysis. {max_words} words max."
 
 ```bash
 # 1. Gemini responds to Codex AND Claude (RESUME by UUID)
-cd "$PROJECT" && gemini -r <GEMINI_UUID> -y "Round {N} of our three-way debate.
+cd "$PROJECT" && gemini -r <GEMINI_UUID> -y -o text "Round {N} of our three-way debate.
 
 Codex (Round {N-1}):
 ---
@@ -762,9 +766,10 @@ debates/
 5. **Codex: run from debate folder** - sessions scoped to working directory
 6. **Persist BOTH session UUIDs** - store in state.json for reliable resume
 7. **Resume by explicit UUID** - `-r <UUID>` for Gemini, `exec resume <UUID>` for Codex
-8. **Use -y for Gemini** - REQUIRED for non-interactive auto-approval
+8. **Use -y AND -o text for Gemini** - REQUIRED for non-interactive + captured output
 9. **Inject BOTH other responses** - each advisor gets Codex + Claude or Gemini + Claude
 10. **Generate synthesis with ALL THREE perspectives** - not just two!
+11. **Create ALL required files** - state.json, context.md, index.json entry (see File Checklist)
 
 ---
 
