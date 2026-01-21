@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Validation Report - [DATE]</title>
+  <style>
+    :root {
+      --pass: #22c55e;
+      --fail: #ef4444;
+      --warn: #f59e0b;
+      --info: #3b82f6;
+      --skip: #6b7280;
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #e2e8f0;
+      --text-muted: #94a3b8;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 20px;
+    }
+
+    .container { max-width: 1400px; margin: 0 auto; }
+
+    /* Header */
+    header {
+      background: linear-gradient(135deg, #3b82f6 0%, #8b5cf6 100%);
+      padding: 30px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+    }
+    header h1 { font-size: 2rem; margin-bottom: 10px; }
+    header p { opacity: 0.9; margin: 5px 0; }
+    header .meta { display: flex; gap: 30px; flex-wrap: wrap; margin-top: 15px; }
+    header .meta span { font-size: 0.9rem; }
+
+    /* Summary Grid */
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+    .summary-card {
+      background: var(--card-bg);
+      padding: 20px;
+      border-radius: 10px;
+      text-align: center;
+      border: 1px solid var(--border);
+    }
+    .summary-card .number {
+      font-size: 2.5rem;
+      font-weight: bold;
+      display: block;
+    }
+    .summary-card .label {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+    .summary-card.total .number { color: var(--info); }
+    .summary-card.pass .number { color: var(--pass); }
+    .summary-card.fail .number { color: var(--fail); }
+    .summary-card.warn .number { color: var(--warn); }
+    .summary-card.skip .number { color: var(--skip); }
+
+    /* Section */
+    section {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 25px;
+      margin-bottom: 25px;
+      border: 1px solid var(--border);
+    }
+    section h2 {
+      margin-bottom: 20px;
+      padding-bottom: 15px;
+      border-bottom: 2px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    section h3 { margin: 20px 0 15px 0; color: var(--text-muted); }
+
+    /* Route Section */
+    .route-section {
+      margin-bottom: 30px;
+      padding-bottom: 30px;
+      border-bottom: 1px solid var(--border);
+    }
+    .route-section:last-child { border-bottom: none; }
+    .route-path {
+      font-family: monospace;
+      font-size: 1.2rem;
+      color: #60a5fa;
+      margin-bottom: 20px;
+    }
+
+    /* Screenshots Row */
+    .screenshots-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 20px;
+    }
+    .screenshots-row figure {
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    .screenshots-row figure:hover { border-color: var(--info); }
+    .screenshots-row img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+    .screenshots-row figcaption {
+      padding: 10px;
+      background: var(--bg);
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      text-align: center;
+    }
+
+    /* Screenshot Analysis */
+    .screenshot-analysis {
+      background: var(--bg);
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      font-size: 0.9rem;
+    }
+    .screenshot-analysis h4 { margin-bottom: 10px; color: var(--text); }
+    .screenshot-analysis ul { margin-left: 20px; }
+    .screenshot-analysis li { margin: 5px 0; }
+    .screenshot-analysis .issue { color: var(--warn); }
+
+    /* Table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 15px 0;
+    }
+    th, td {
+      padding: 12px 15px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+    th {
+      background: var(--bg);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    tr:hover { background: rgba(59, 130, 246, 0.1); }
+
+    /* Badge */
+    .badge {
+      padding: 4px 10px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+    .badge.pass { background: rgba(34, 197, 94, 0.2); color: var(--pass); }
+    .badge.fail { background: rgba(239, 68, 68, 0.2); color: var(--fail); }
+    .badge.skip { background: rgba(107, 114, 128, 0.2); color: var(--skip); }
+
+    /* Issues Box */
+    .issues-box {
+      background: rgba(245, 158, 11, 0.1);
+      border-left: 4px solid var(--warn);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      margin: 15px 0;
+    }
+    .issues-box h4 { color: var(--warn); margin-bottom: 10px; }
+    .issues-box ul { margin-left: 20px; }
+    .issues-box li { margin: 5px 0; }
+
+    /* Console Box */
+    .console-box {
+      background: var(--bg);
+      border-left: 4px solid var(--fail);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      margin: 15px 0;
+    }
+    .console-box h4 { color: var(--fail); margin-bottom: 10px; }
+    .console-box pre {
+      font-family: 'Fira Code', monospace;
+      font-size: 0.85rem;
+      white-space: pre-wrap;
+      color: #fca5a5;
+    }
+
+    /* Verification Evidence */
+    .evidence {
+      background: var(--bg);
+      padding: 10px 15px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      margin-top: 5px;
+    }
+    .evidence.pass { border-left: 3px solid var(--pass); }
+    .evidence.fail { border-left: 3px solid var(--fail); }
+
+    /* Lightbox */
+    .lightbox {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 1000;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+    }
+    .lightbox.active { display: flex; }
+    .lightbox img {
+      max-width: 95%;
+      max-height: 85%;
+      object-fit: contain;
+    }
+    .lightbox-caption {
+      color: #fff;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    .lightbox-close {
+      position: absolute;
+      top: 20px; right: 30px;
+      font-size: 40px;
+      color: #fff;
+      cursor: pointer;
+    }
+
+    /* Issues Summary */
+    .issues-summary h3 {
+      color: var(--text);
+      margin-top: 25px;
+      padding-top: 15px;
+      border-top: 1px solid var(--border);
+    }
+    .issues-summary ul { margin-left: 20px; margin-bottom: 15px; }
+    .issues-summary li {
+      margin: 10px 0;
+      padding: 10px;
+      background: var(--bg);
+      border-radius: 6px;
+    }
+    .issues-summary strong { color: var(--info); }
+
+    /* Footer */
+    footer {
+      text-align: center;
+      padding: 20px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    /* No issues message */
+    .no-issues {
+      background: rgba(34, 197, 94, 0.1);
+      border-left: 4px solid var(--pass);
+      padding: 15px;
+      border-radius: 0 8px 8px 0;
+      color: var(--pass);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Validation Report</h1>
+      <p><strong>App:</strong> [APP_URL]</p>
+      <div class="meta">
+        <span><strong>Date:</strong> [DATE]</span>
+        <span><strong>Session:</strong> [SESSION_ID]</span>
+        <span><strong>Duration:</strong> [DURATION]</span>
+        <span><strong>Context Resets:</strong> [RESETS]</span>
+      </div>
+    </header>
+
+    <!-- Summary Cards -->
+    <div class="summary-grid">
+      <div class="summary-card total">
+        <span class="number">[TOTAL]</span>
+        <span class="label">Total Elements</span>
+      </div>
+      <div class="summary-card pass">
+        <span class="number">[PASSED]</span>
+        <span class="label">Passed</span>
+      </div>
+      <div class="summary-card fail">
+        <span class="number">[FAILED]</span>
+        <span class="label">Failed</span>
+      </div>
+      <div class="summary-card warn">
+        <span class="number">[UI_ISSUES]</span>
+        <span class="label">UI Issues</span>
+      </div>
+      <div class="summary-card skip">
+        <span class="number">[CONSOLE_ERRORS]</span>
+        <span class="label">Console Errors</span>
+      </div>
+    </div>
+
+    <!-- Route Sections -->
+    <section>
+      <h2>Test Results by Route</h2>
+
+      <!-- REPEAT FOR EACH ROUTE -->
+      <div class="route-section">
+        <div class="route-path">[ROUTE_PATH]</div>
+
+        <div class="screenshots-row">
+          <figure onclick="openLightbox('[MOBILE_SCREENSHOT]', 'Mobile 375px')">
+            <img src="[MOBILE_SCREENSHOT]" alt="Mobile view">
+            <figcaption>Mobile (375px)</figcaption>
+          </figure>
+          <figure onclick="openLightbox('[TABLET_SCREENSHOT]', 'Tablet 768px')">
+            <img src="[TABLET_SCREENSHOT]" alt="Tablet view">
+            <figcaption>Tablet (768px)</figcaption>
+          </figure>
+          <figure onclick="openLightbox('[DESKTOP_SCREENSHOT]', 'Desktop 1024px')">
+            <img src="[DESKTOP_SCREENSHOT]" alt="Desktop view">
+            <figcaption>Desktop (1024px)</figcaption>
+          </figure>
+        </div>
+
+        <div class="screenshot-analysis">
+          <h4>Screenshot Analysis</h4>
+          <ul>
+            <li><strong>Mobile:</strong> [MOBILE_ANALYSIS]</li>
+            <li><strong>Tablet:</strong> [TABLET_ANALYSIS]</li>
+            <li><strong>Desktop:</strong> [DESKTOP_ANALYSIS]</li>
+            <!-- IF ISSUES -->
+            <li class="issue">[UI_ISSUE_DESCRIPTION]</li>
+          </ul>
+        </div>
+
+        <h3>Elements Tested</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Element</th>
+              <th>Expected Behavior</th>
+              <th>Verification</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- REPEAT FOR EACH ELEMENT -->
+            <tr>
+              <td>[ELEMENT_TEXT]</td>
+              <td>[EXPECTED_BEHAVIOR]</td>
+              <td>
+                [VERIFICATION_EVIDENCE]
+                <div class="evidence [STATUS]">[EVIDENCE_DETAIL]</div>
+              </td>
+              <td><span class="badge [STATUS]">[STATUS]</span></td>
+            </tr>
+            <!-- END REPEAT -->
+          </tbody>
+        </table>
+
+        <!-- IF UI ISSUES -->
+        <div class="issues-box">
+          <h4>UI Issues</h4>
+          <ul>
+            <li>[ISSUE_DESCRIPTION]</li>
+          </ul>
+        </div>
+
+        <!-- IF CONSOLE ERRORS -->
+        <div class="console-box">
+          <h4>Console Errors</h4>
+          <pre>[CONSOLE_ERROR_MESSAGES]</pre>
+        </div>
+
+        <!-- IF NO ISSUES -->
+        <div class="no-issues">
+          No issues found on this route.
+        </div>
+      </div>
+      <!-- END REPEAT ROUTE -->
+    </section>
+
+    <!-- Issues Summary -->
+    <section class="issues-summary">
+      <h2>Issues Summary</h2>
+
+      <h3>Verification Failures ([FAILURE_COUNT])</h3>
+      <!-- IF FAILURES -->
+      <ul>
+        <li>
+          <strong>[ELEMENT_ID]</strong> on [ROUTE]
+          <br>Expected: [EXPECTED]
+          <br>Evidence: [WHAT_HAPPENED]
+        </li>
+      </ul>
+      <!-- ELSE -->
+      <div class="no-issues">No verification failures.</div>
+
+      <h3>UI Issues ([UI_ISSUE_COUNT])</h3>
+      <!-- IF UI ISSUES -->
+      <ul>
+        <li>[ROUTE]: [ISSUE_DESCRIPTION]</li>
+      </ul>
+      <!-- ELSE -->
+      <div class="no-issues">No UI issues found.</div>
+
+      <h3>Console Errors ([CONSOLE_ERROR_COUNT])</h3>
+      <!-- IF CONSOLE ERRORS -->
+      <ul>
+        <li>[ROUTE]: [ERROR_MESSAGE]</li>
+      </ul>
+      <!-- ELSE -->
+      <div class="no-issues">No console errors.</div>
+    </section>
+
+    <!-- Lightbox -->
+    <div class="lightbox" onclick="closeLightbox(event)">
+      <span class="lightbox-close">&times;</span>
+      <img id="lightbox-img" src="">
+      <div class="lightbox-caption" id="lightbox-caption"></div>
+    </div>
+
+    <footer>
+      <p>Generated by Validation Skill</p>
+      <p>Report: test-manifest/reports/validation-[DATE].html</p>
+    </footer>
+  </div>
+
+  <script>
+    function openLightbox(src, caption) {
+      document.getElementById('lightbox-img').src = src;
+      document.getElementById('lightbox-caption').textContent = caption || '';
+      document.querySelector('.lightbox').classList.add('active');
+    }
+    function closeLightbox(e) {
+      if (e.target.classList.contains('lightbox') || e.target.classList.contains('lightbox-close')) {
+        document.querySelector('.lightbox').classList.remove('active');
+      }
+    }
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') document.querySelector('.lightbox').classList.remove('active');
+    });
+  </script>
+</body>
+</html>

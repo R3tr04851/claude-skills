@@ -1,217 +1,341 @@
 # AI Debate Hub
 
-A Claude Code skill that enables **three-way debates** between Claude, Gemini CLI, and OpenAI Codex CLI. Claude is both a **participant and moderator**, contributing its own analysis alongside the other advisors.
+A collection of Claude Code skills and tools for enhanced development workflows.
 
-## Overview
+---
 
-AI Debate Hub creates a three-way discussion where all three AI systems analyze problems independently, respond to each other's points across multiple rounds, and converge on recommendations through genuine debate.
-
-**Key distinction:** Claude is NOT just an orchestrator - it's an active participant with its own voice.
+## 📁 Project Structure
 
 ```
-        User Question
-              |
-              v
-+---------------------------+
-|         ROUND 1           |
-+---------------------------+
-|  Gemini   Codex   Claude  |
-|  analyzes analyzes analyzes|
-+---------------------------+
-              |
-              v
-+---------------------------+
-|         ROUND 2+          |
-+---------------------------+
-|  Gemini   Codex   Claude  |
-|  responds responds responds|
-|  to both  to both  to both |
-+---------------------------+
-              |
-              v
-+---------------------------+
-|       SYNTHESIS           |
-+---------------------------+
-|   All 3 perspectives      |
-|   Claude's recommendation |
-+---------------------------+
+ai-debate-hub/
+├── skills/               # Claude Code skills
+│   ├── debate/          # Three-way debate skill
+│   ├── validation/      # Comprehensive app validation skill
+│   ├── feature-validation-SKILL.md  # Feature validation example
+│   └── report-template.html          # HTML report template
+├── tools/               # Reusable tools and frameworks
+│   ├── skill-auto-healing.md
+│   └── AUTO-HEALING-INTEGRATION-GUIDE.md
+├── debates/             # Generated debate transcripts
+└── tests/               # Test files
 ```
 
-## Features
+---
 
-- **Multi-round debates**: Configurable 1-10 rounds of back-and-forth
-- **Session persistence**: Advisors maintain context across rounds via session UUIDs
-- **Multiple debate styles**: quick, thorough, adversarial, collaborative
-- **Automatic synthesis**: Generates summary of agreements, disagreements, and recommendations
-- **Token efficient**: Only injects other advisor's response (each remembers own context)
+## 🎯 Skills
 
-## Requirements
+### Debate Skill
+**Location:** `skills/debate/`
+**Purpose:** Three-way debates between Claude, Gemini CLI, and OpenAI Codex CLI
 
-- [Claude Code CLI](https://github.com/anthropics/claude-code)
-- [Gemini CLI](https://github.com/google-gemini/gemini-cli) - `npm install -g @anthropic-ai/gemini-cli`
-- [Codex CLI](https://github.com/openai/codex) - OpenAI's coding assistant
+Claude is both a **participant and moderator**, contributing its own analysis alongside other AI advisors. Enables multi-round discussions where all three systems analyze problems independently and converge on recommendations through genuine debate.
 
-## Installation
+**Key Features:**
+- Multi-round debates (1-10 rounds configurable)
+- Session persistence across rounds
+- Multiple debate styles: quick, thorough, adversarial, collaborative
+- Automatic synthesis of perspectives
+- Web viewer for debate visualization
 
-1. Clone this repository into your Claude Code skills directory:
+**Usage:**
 ```bash
-cd ~/.claude/skills
-git clone https://github.com/wolverin0/claude-skills.git
-```
-
-2. The skill is now available at `~/.claude/skills/claude-skills/skills/debate/SKILL.md`
-
-Or copy just the debate skill:
-```bash
-cp -r claude-skills/skills/debate ~/.claude/skills/
-```
-
-## Usage
-
-### Basic Invocation
-```
 /debate Should we use Redis or in-memory cache for our session store?
-```
-
-### With Options
-```
 /debate -r 3 -d thorough Review our authentication implementation
-/debate --rounds 2 --debate-style adversarial Is this API design secure?
 ```
 
-### Flags
+**[Full Documentation →](skills/debate/README.md)**
 
-| Flag | Short | Default | Description |
-|------|-------|---------|-------------|
-| `--rounds N` | `-r N` | 1 | Number of debate rounds (1-10) |
-| `--debate-style STYLE` | `-d STYLE` | quick | Style: quick, thorough, adversarial, collaborative |
-| `--moderator-style MODE` | `-m MODE` | guided | Mode: transparent, guided, authoritative |
-| `--max-words N` | `-w N` | 300 | Word limit per response |
+---
 
-## Architecture
+### Validation Skill
+**Location:** `skills/validation/`
+**Purpose:** Comprehensive web app validation with REAL browser testing and evidence-based reporting
 
-### Session Management
+Automatically discovers and tests ALL interactive elements in your web application across 4 breakpoints (mobile, tablet, laptop, desktop). Tests with actual browser interactions, not just static analysis.
 
-Each advisor maintains its own session for context continuity:
+**Key Features:**
+- **Comprehensive discovery** - Finds every button, link, form, and input
+- **Real verification** - Clicks elements and verifies outcomes actually happened
+- **Screenshot analysis** - Captures AND analyzes screenshots at each breakpoint
+- **Console error checking** - Checks for JavaScript errors after every interaction
+- **Session persistence** - Resume testing across context resets without losing progress
+- **HTML reports** - Persistent, evidence-based reports with screenshots
+- **Automatic cleanup** - Removes test artifacts after validation
 
-- **Gemini**: Runs from project root, sessions tracked by UUID via `--list-sessions`
-- **Codex**: Runs from debate folder, UUID captured from output header
+**Typical workflow:**
+1. **PRE-FLIGHT:** Verify dev server is running
+2. **DISCOVER:** Find all routes, elements, and critical flows
+3. **TEST:** Test each element at all breakpoints with verification
+4. **REPORT:** Generate HTML report with evidence
+
+**Usage:**
+```bash
+/validate http://localhost:3000
+/validate --resume    # Resume from previous state
+/validate --fresh     # Start fresh validation
+```
+
+**Output:** Persistent HTML reports in `test-manifest/reports/` with:
+- Screenshots for every element at every breakpoint
+- Console errors found during testing
+- Passed/failed tests with evidence
+- UI issues identified
+
+**[Full Documentation →](skills/validation/README.md)**
+
+---
+
+### Feature Validation (Example Skill)
+**Location:** `skills/feature-validation-SKILL.md`
+**Purpose:** Reference implementation showing auto-healing integration
+
+This is an **example skill** demonstrating how auto-healing has been integrated into a real-world validation skill. It includes:
+- Phase 1: Trigger capture (reads session transcript)
+- Phases 2-9: Feature testing workflow
+- Phase 10: Retrospective (evidence-based self-evaluation)
+
+**Use this as a reference** when integrating auto-healing into your own skills.
+
+**Report Template:** `skills/report-template.html`
+
+---
+
+## 🛠️ Tools
+
+### Auto-Healing Module
+**Location:** `tools/skill-auto-healing.md`
+**Purpose:** Enables skills to learn from execution through evidence-based retrospectives
+
+A reusable module that adds self-evaluation and learning capabilities to any skill by:
+1. **Capturing trigger context** - Documents why the skill was invoked
+2. **Tracking execution** - Records all actions during execution
+3. **Performing retrospectives** - Evaluates performance against original intent with session transcript evidence
+
+**Key Benefits:**
+- Skills learn from mistakes through line-cited evidence
+- User corrections are documented as lessons
+- Skill improvements suggested based on actual execution
+- Works with large session transcripts (> 256KB handled correctly)
+
+**Features:**
+- Cross-platform (Windows/macOS/Linux)
+- Size-aware transcript reading
+- Evidence-based self-assessment
+- Skill improvement recommendations
+
+**[Full Documentation →](tools/skill-auto-healing.md)**
+
+---
+
+### Auto-Healing Integration Guide
+**Location:** `tools/AUTO-HEALING-INTEGRATION-GUIDE.md`
+**Purpose:** Step-by-step guide for adding auto-healing to your skills
+
+A practical guide showing how to integrate the auto-healing module into existing skills with minimal changes.
+
+**What it provides:**
+- Copy-paste prompt template for Claude
+- Real before/after example (353 → 528 lines, +49%)
+- Section-by-section breakdown of what gets added
+- Verification checklist to ensure correct integration
+- Troubleshooting for common failures (rewrites, missing content)
+- Actual diff showing feature-validation integration
+
+**Quick Start:**
+```
+Backup my SKILL.md with timestamp, then apply skill-auto-healing.md to it.
+
+CRITICAL:
+- Create backup: SKILL.md.backup-{timestamp}
+- Modify SKILL.md directly
+- DO NOT rewrite existing content
+- ONLY add Phase 1 trigger capture + final phase retrospective
+- Renumber phases correctly
+- Line count should increase ~40-60% (not double)
+
+Use feature-validation-SKILL.md as reference.
+```
+
+**[Full Integration Guide →](tools/AUTO-HEALING-INTEGRATION-GUIDE.md)**
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone Repository
 
 ```bash
-# Gemini (from project root)
-gemini -y "Initial prompt..."
-gemini -r <UUID> -y "Follow-up..."
-
-# Codex (from debate folder)
-codex exec --full-auto "Initial prompt..."
-codex exec resume <UUID> --full-auto "Follow-up..."
+git clone https://github.com/wolverin0/ai-debate-hub.git
+cd ai-debate-hub
 ```
 
-### Debate Flow
+### 2. Install Skills
 
-```
-Round 1 (all three analyze):
-|-- Gemini analyzes topic
-|-- Codex analyzes topic
-+-- Claude analyzes topic (YOUR contribution)
-
-Round 2+ (all three respond):
-|-- Gemini responds to Codex + Claude
-|-- Codex responds to Gemini + Claude
-+-- Claude responds to Gemini + Codex (YOUR contribution)
-
-Synthesis:
-+-- All three perspectives consolidated
-+-- Points of agreement across all three
-+-- Points of disagreement
-+-- Claude's final recommendation
-```
-
-### File Structure
-
-```
-{project}/debates/
-|-- viewer.html             # Auto-deployed from skill folder
-|-- index.json              # Debate registry for viewer
-+-- NNN-topic-slug/
-    |-- context.md          # Initial context
-    |-- state.json          # Session UUIDs, status
-    |-- transcript.md       # Combined chronological record
-    |-- synthesis.md        # Final synthesis (all 3 perspectives)
-    +-- rounds/
-        |-- r001_gemini.md
-        |-- r001_codex.md
-        |-- r001_claude.md  # Claude's contribution
-        |-- r002_gemini.md
-        |-- r002_codex.md
-        |-- r002_claude.md  # Claude's contribution
-        +-- ...
-```
-
-### Viewing Debates
-
-The skill automatically deploys a web viewer to your debates folder:
+Copy skills to your Claude Code skills directory:
 
 ```bash
-cd {project}/debates
+# Debate skill
+cp -r skills/debate ~/.claude/skills/
+
+# Validation skill
+cp -r skills/validation ~/.claude/skills/
+
+# Or link instead of copy
+ln -s $(pwd)/skills/debate ~/.claude/skills/debate
+ln -s $(pwd)/skills/validation ~/.claude/skills/validation
+```
+
+### 3. Use the Skills
+
+**Debate skill:**
+```bash
+# Basic usage
+/debate Should we implement feature X?
+
+# With options
+/debate -r 3 -d thorough Review our API design
+```
+
+**Validation skill:**
+```bash
+# Basic usage
+/validate http://localhost:3000
+
+# With options
+/validate --resume    # Resume from previous validation
+/validate --fresh     # Start fresh
+```
+
+### 4. Add Auto-Healing to Your Skills
+
+Follow the [Auto-Healing Integration Guide](tools/AUTO-HEALING-INTEGRATION-GUIDE.md) to add self-evaluation capabilities to your own skills.
+
+---
+
+## 📊 Debate Viewer
+
+The debate skill generates a web-based viewer for visualizing debates:
+
+```bash
+cd debates
 python -m http.server 8000
 # Open http://localhost:8000/viewer.html
 ```
 
-The viewer shows:
-- **Synthesis** - Final analysis and recommendations
-- **Rounds** - Side-by-side comparison (2 or 3 columns)
-- **Transcript** - Full chronological debate record
-- **State** - Debug view of debate metadata
+**Viewer features:**
+- Side-by-side round comparison (all 3 participants)
+- Synthesis view (final recommendations)
+- Full chronological transcript
+- State/metadata debug view
 
-## Debate Styles
+---
 
-| Style | Behavior | Default Rounds |
-|-------|----------|----------------|
-| `quick` | Single round, parallel analysis | 1 |
-| `thorough` | Multi-round, verify claims | 3 |
-| `adversarial` | One proposes, one critiques | 3 |
-| `collaborative` | "Yes, and..." building | 2 |
+## 🔧 Requirements
 
-## Development
+### For Debate Skill
+- [Claude Code CLI](https://github.com/anthropics/claude-code)
+- [Gemini CLI](https://github.com/google-gemini/gemini-cli) - `npm install -g @google/gemini-cli`
+- [OpenAI Codex CLI](https://github.com/openai/codex) - `npm install -g openai-codex`
 
-### Testing
+### For Validation Skill
+- [Claude Code CLI](https://github.com/anthropics/claude-code)
+- [Claude-in-Chrome MCP Extension](https://github.com/anthropics/claude-in-chrome) - Browser automation via MCP
+- Running web application (dev server or static site)
 
-Run a simple test debate:
+### For Auto-Healing
+- Claude Code (already required for skills)
+- Session transcripts must be accessible at `~/.claude/projects/{project-slug}/*.jsonl`
+
+---
+
+## 📖 Documentation
+
+### Skills
+- **[Debate Skill Documentation](skills/debate/README.md)** - Full debate skill usage guide
+- **[Validation Skill Documentation](skills/validation/README.md)** - Comprehensive app validation guide
+- **[Feature Validation Example](skills/feature-validation-SKILL.md)** - Reference implementation with auto-healing
+
+### Tools
+- **[Auto-Healing Module](tools/skill-auto-healing.md)** - Technical documentation for the auto-healing module
+- **[Integration Guide](tools/AUTO-HEALING-INTEGRATION-GUIDE.md)** - How to add auto-healing to your skills
+
+---
+
+## 🎨 Example: Auto-Healing in Action
+
+**Before integration:**
+```markdown
+## Phase 1: Analyze Implementation
+git diff --name-only HEAD~5
+
+## Phase 2: Plan Test Scenarios
+...
+## Phase 9: Generate HTML Report
 ```
-/debate -r 2 Is 2+2=4?
+
+**After integration (+175 lines, +49%):**
+```markdown
+## 🚨 CRITICAL BLOCKERS
+You MUST read session transcript before and after execution
+
+## Phase 1: Analyze Implementation
+**🚨 MANDATORY: Identify Trigger Context from Session Transcript**
+[80 lines of trigger capture instructions]
+
+git diff --name-only HEAD~5
+
+## Phase 2-9: [Original content, renumbered]
+...
+
+## Phase 10: Retrospective & Learning
+**🚨 MANDATORY: Read Session Transcript for Evidence-Based Retrospective**
+[80 lines of self-evaluation instructions with line citations]
 ```
 
-Verify session continuity by checking token growth in Codex output.
+**Result:** Skill now captures why it was invoked, tracks actions, and performs evidence-based retrospectives citing actual transcript line numbers.
 
-### Version History
+---
 
-- **v4.7** (current) - Three-way debate structure
-  - Claude is now an active PARTICIPANT, not just orchestrator
-  - Each round has contributions from all three: Gemini, Codex, Claude
-  - Advisors receive responses from BOTH other participants
-  - Claude's responses saved to r00N_claude.md files
+## 🤝 Contributing
 
-- **v4.6** - Production-ready architecture
-  - Gemini runs from project root for file access
-  - Both advisors use explicit UUID tracking
-  - Full e2e tested and validated
+Contributions welcome! Areas of interest:
+- New debate styles or moderator modes
+- Additional skills with auto-healing integration
+- Improvements to auto-healing module
+- Better visualization in debate viewer
+- Bug fixes and documentation improvements
 
-- **v4.5** - Fixed Codex syntax, removed broken flags
-- **v4.4** - Added session UUID persistence
-- **v4.3** - Flag precedence rules, synthesis workflow
-- **v4.2** - Session folder scoping documentation
+**To contribute:**
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Submit a pull request
 
-## Known Limitations
+---
 
-1. **Gemini `--include-directories`**: Flag exists but doesn't work; run from project root instead
-2. **Codex `-C` flag**: Doesn't bypass trust requirements; use `cd` instead
-3. **Codex rate limits**: May hit usage limits on extended debates
+## 📜 License
 
-## License
+MIT License - See LICENSE file for details
 
-MIT
+---
 
-## Contributing
+## 🔗 Links
 
-Issues and PRs welcome at [github.com/wolverin0/claude-skills](https://github.com/wolverin0/claude-skills)
+- **Repository:** [github.com/wolverin0/ai-debate-hub](https://github.com/wolverin0/ai-debate-hub)
+- **Issues:** [Report bugs or request features](https://github.com/wolverin0/ai-debate-hub/issues)
+- **Claude Code:** [anthropics/claude-code](https://github.com/anthropics/claude-code)
+
+---
+
+## 📝 Version History
+
+- **v1.0.0** - Initial release
+  - Debate skill with three-way participation
+  - Auto-healing module and integration guide
+  - Feature validation reference implementation
+  - Web-based debate viewer
+
+---
+
+**Built with Claude Code**
+Demonstrating self-improving skills through auto-healing and collaborative AI debate.
